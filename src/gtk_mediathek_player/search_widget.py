@@ -37,7 +37,7 @@ class SearchWidget(Gtk.Box):
         widget.destroy()
 
     def display_warning(self, message):
-        messagedialog = Gtk.MessageDialog(parent=self,
+        messagedialog = Gtk.MessageDialog(parent=self._main_window,
                                           flags=Gtk.DialogFlags.MODAL,
                                           type=Gtk.MessageType.WARNING,
                                           buttons=Gtk.ButtonsType.OK,

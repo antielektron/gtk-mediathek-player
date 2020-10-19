@@ -45,12 +45,12 @@ class MainApp(Gtk.Window):
 
     def on_search(self, _ = None):
         if self.get_active_pane() == "player":
-            self._player_widget.stop()
+            self._player_widget.pause()
         self.set_active_pane("search")
 
     def _create_context_switch(self):
 
-        self._search_radio = new_button_with_icon("system-search")
+        self._search_radio = new_button_with_icon("edit-find")
         
         self._search_radio.connect("clicked", self.on_search)
 
@@ -107,4 +107,9 @@ class MainApp(Gtk.Window):
     def start_player(self, uri: str):
         if self.get_active_pane() != "player":
             self.set_active_pane("player")
+
+        self._player_widget.stop()
         self._player_widget.play_from_uri(uri)
+        self._player_widget.play()
+
+        

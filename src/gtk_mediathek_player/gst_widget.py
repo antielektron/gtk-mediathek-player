@@ -58,7 +58,6 @@ class GstWidget(Gtk.Box):
     
 
     def load_from_uri(self, url:str) -> None:
-        self.stop()
         self._player.set_property("uri", url)
     
     def play(self):

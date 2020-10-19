@@ -92,7 +92,6 @@ class PlayerWidget(Gtk.Overlay):
 
     def play_from_uri(self, uri: str):
         self._videoarea.load_from_uri(uri)
-        self.play()
 
     def play(self, _=None):
         if self.get_state() != Gst.State.PLAYING:
