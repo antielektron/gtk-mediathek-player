@@ -43,6 +43,11 @@ class MainApp(Gtk.Window):
         self.add(self._main_container)
 
 
+        self.connect('motion-notify-event', self.on_mouse_move)
+    
+    def on_mouse_move(self, _, __):
+        self._player_widget.show_controls()
+
     def on_search(self, _ = None):
         if self.get_active_pane() == "player":
             self._player_widget.pause()

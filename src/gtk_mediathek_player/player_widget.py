@@ -28,6 +28,8 @@ class PlayerWidget(Gtk.Overlay):
 
         self._is_update = False
 
+        self._seconds_after_mouse_move = 0
+
         GLib.timeout_add_seconds(1, self.update_controls)
 
         self._slider.connect("value-changed", self._on_user_slider_change)
@@ -48,6 +50,11 @@ class PlayerWidget(Gtk.Overlay):
             self._slider.set_value(self._videoarea.get_position())
 
         self._is_update = False
+
+        if self._seconds_after_mouse_move > 3:
+            self._controls.set_reveal_child(False)
+        
+        self._seconds_after_mouse_move += 1
 
         return True
 
@@ -101,6 +108,7 @@ class PlayerWidget(Gtk.Overlay):
 
 
         self._controls.set_valign(Gtk.Align.END)
+        self._controls.set_transition_type(Gtk.RevealerTransitionType.SLIDE_UP)
         self._controls.set_reveal_child(True)
 
         style_context = self._controls.get_style_context()
@@ -128,3 +136,7 @@ class PlayerWidget(Gtk.Overlay):
 
     def get_state(self):
         return self._videoarea.get_state()
+    
+    def show_controls(self):
+        self._controls.set_reveal_child(True)
+        self._seconds_after_mouse_move = 0
