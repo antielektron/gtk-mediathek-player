@@ -1,6 +1,8 @@
 import requests
 import json
 
+import datetime as dt
+
 
 class MediathekViewWebAnswer(object):
     def __init__(self, answer_json: str):
@@ -68,6 +70,11 @@ class MediathekViewWebAnswer(object):
 
     def get_description(self):
         return self._description
+    
+    def get_timestamp(self) -> dt.datetime:
+        if self._timestamp is None:
+            return None
+        return dt.datetime.utcfromtimestamp(int(self._timestamp))
 
 
 class MediathekViewWebRequest(object):
