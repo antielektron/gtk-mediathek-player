@@ -134,7 +134,7 @@ class SearchWidget(Gtk.Box):
 
         search_text = self._search_entry.get_text()
 
-        req = mr.MediathekViewWebRequest(query=search_text)
+        req = mr.MediathekViewWebRequest(query=search_text, size=24)
 
         answers = req.perform_request()
 
