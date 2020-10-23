@@ -30,8 +30,6 @@ class PlayerWidget(Gtk.Overlay):
 
         self._seconds_after_mouse_move = 0
 
-        GLib.timeout_add_seconds(1, self.update_controls)
-
         self._slider.connect("value-changed", self._on_user_slider_change)
 
     def update_controls(self):
