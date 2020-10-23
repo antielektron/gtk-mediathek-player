@@ -14,6 +14,10 @@ class MainApp(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title="Gtk Mediathek Player")
 
+        self.set_default_icon_name("totem")
+
+        self.set_wmclass("app-name", "Gtk Mediathek Player");
+
         self.set_default_size(800, 600)
 
         self._main_container = Gtk.Overlay()
@@ -98,7 +102,7 @@ class MainApp(Gtk.Window):
             headerbar.pack_start(self._search_radio)
 
             headerbar.set_show_close_button(True)
-            headerbar.props.title = "Main Window"
+            headerbar.props.title = "Gtk Mediathek Player"
             self.set_titlebar(headerbar)
         
         return headerbar
