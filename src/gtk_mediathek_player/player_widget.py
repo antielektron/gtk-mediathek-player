@@ -9,7 +9,7 @@ gi.require_version('Gst', '1.0')
 
 class PlayerWidget(Gtk.Overlay):
     @staticmethod
-    def create_player_for_uri(uri:str):
+    def create_player_for_uri(uri: str):
         widget = PlayerWidget()
         widget.play_from_uri(uri)
         return widget
@@ -58,6 +58,7 @@ class PlayerWidget(Gtk.Overlay):
         self._videoarea.set_position(value)
 
     def _create_controls(self) -> Gtk.Box:
+
         self._slider = Gtk.Scale.new_with_range(orientation=Gtk.Orientation.HORIZONTAL,
                                                 min=0,
                                                 max=100,
@@ -66,26 +67,44 @@ class PlayerWidget(Gtk.Overlay):
         self._slider.props.draw_value = False
 
         self._play_button = tools.new_button_with_icon('media-playback-start')
+        
+
         self._stop_button = tools.new_button_with_icon('media-playback-stop')
 
-        self._controls = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        bbox = Gtk.ButtonBox(orientation=Gtk.Orientation.HORIZONTAL)
+        bbox.set_layout(Gtk.ButtonBoxStyle.EXPAND)
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self._controls = Gtk.Revealer()
 
-        self._controls.pack_start(self._play_button,
-                                  expand=False,
-                                  fill=False,
-                                  padding=0)
+        bbox.pack_start(self._play_button,
+                       expand=False,
+                       fill=False,
+                       padding=0)
 
-        self._controls.pack_start(self._stop_button,
-                                  expand=False,
-                                  fill=False,
-                                  padding=0)
+        bbox.pack_start(self._stop_button,
+                       expand=False,
+                       fill=False,
+                       padding=0)
 
-        self._controls.pack_end(self._slider,
-                                expand=True,
-                                fill=True,
-                                padding=0)
+        box.pack_start(bbox,
+                       expand=False,
+                       fill=False,
+                       padding=0)
+
+        box.pack_end(self._slider,
+                     expand=True,
+                     fill=True,
+                     padding=0)
+
+        
+        self._controls.add(box)
+
 
         self._controls.set_valign(Gtk.Align.END)
+        self._controls.set_reveal_child(True)
+
+        style_context = self._controls.get_style_context()
+        style_context.add_class(Gtk.STYLE_CLASS_TITLEBAR)
 
         self._play_button.connect("clicked", self.play)
         self._stop_button.connect("clicked", self.pause)
