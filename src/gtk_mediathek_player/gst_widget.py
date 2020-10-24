@@ -40,6 +40,8 @@ class GstWidget(Gtk.Box):
         return gtksink
     
     def _build_sink_and_widget(self) -> None:
+
+        """
         gtkglsink = Gst.ElementFactory.make("gtkglsink")
 
         # TODO: fallback if not graphic acceleration is available
@@ -50,6 +52,10 @@ class GstWidget(Gtk.Box):
         self._sink = sinkbin
 
         self._sinkwidget = gtkglsink.get_property("widget")
+        """
+
+        self._sink = Gst.ElementFactory.make("gtksink")
+        self._sinkwidget = self._sink.get_property("widget")
     
     def _create_player(self) -> None:
         self._player = Gst.ElementFactory.make("playbin", "player")

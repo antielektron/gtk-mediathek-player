@@ -1,14 +1,16 @@
 
 import gi
-from . import main_window
-
-from gi.repository import Gtk, Gio, Gst, Gdk
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 
-Gst.init(None)
-Gst.init_check(None)
+from gi.repository import Gtk, Gst
+
+from . import gst_pipeline
+from . import main_window
+
+
+gst_pipeline.init_gst()
 
 
 win = main_window.MainApp()
