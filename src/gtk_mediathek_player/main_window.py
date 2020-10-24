@@ -1,7 +1,5 @@
 import gi
 
-from gtk_mediathek_player.tools import new_button_with_icon, new_radio_button_with_icon
-
 gi.require_version("Gtk", "3.0") 
 from gi.repository import Gtk, GLib
 
@@ -14,9 +12,10 @@ class MainApp(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title="Gtk Mediathek Player")
 
-        self.set_default_icon_name("totem")
+        self.set_default_icon_name("gtkmediathekplayer")
 
-        self.set_wmclass("app-name", "Gtk Mediathek Player");
+        self.set_role("GtkMediathekPlayer")
+        self.set_wmclass("GtkMediathekPlayer", "GtkMediathekPlayer")
 
         self.set_default_size(800, 600)
 
@@ -76,7 +75,7 @@ class MainApp(Gtk.Window):
 
     def _create_context_switch(self):
 
-        self._search_radio = new_button_with_icon("edit-find")
+        self._search_radio = tools.new_button_with_icon("edit-find")
         
         self._search_radio.connect("clicked", self.on_search)
 
