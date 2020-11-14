@@ -75,6 +75,9 @@ class MediathekViewWebAnswer(object):
         if self._timestamp is None:
             return None
         return dt.datetime.utcfromtimestamp(int(self._timestamp))
+    
+    def get_duration(self):
+        return self._duration
 
 
 class MediathekViewWebRequest(object):

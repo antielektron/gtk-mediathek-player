@@ -76,6 +76,11 @@ class SearchWidget(Gtk.Box):
         description = answer.get_description()
         time = answer.get_timestamp()
         time_str = "" if time is None else time.strftime('%Y-%m-%d %H:%M:%S')
+        duration = answer.get_duration()
+        if isinstance(duration, int):
+            duration = tools.seconds_to_timestring(duration)
+        else:
+            duration = None
 
         if len(description) > 50:
             description = description[:50] + "..."
@@ -88,24 +93,28 @@ class SearchWidget(Gtk.Box):
 
         play_button.connect("clicked", on_click)
 
-        title_label = Gtk.Label()
-        title_label.set_markup(f"<b>{title}</b>")
-        title_label.set_justify(Gtk.Justification.LEFT)
-        title_label.set_xalign(0)
-        description_label = Gtk.Label()
-        description_label.set_markup(description)
-        description_label.set_justify(Gtk.Justification.LEFT)
-        description_label.set_xalign(0)
-        time_label = Gtk.Label()
-        time_label.set_markup(time_str)
-        time_label.set_justify(Gtk.Justification.LEFT)
-        time_label.set_xalign(0)
+        def create_label(markup_str: str) -> 'Gtk.Label':
+            label = Gtk.Label()
+            label.set_markup(markup_str)
+            label.set_justify(Gtk.Justification.LEFT)
+            label.set_xalign(0)
+
+            return label
+        
+        title_label = create_label(f"<b>{title}</b>")
+        description_label = create_label(description)
+        time_label = create_label(f"📅 {time_str}")
+            
 
         text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
         text_box.pack_start(title_label, False, False, 0)
         text_box.pack_start(description_label, False, False, 0)
         text_box.pack_start(time_label, False, False, 0)
+        if duration is not None:
+            duration_label = create_label(f"⌚ {duration}")
+            text_box.pack_start(duration_label, False, False, 0)
+
 
         card_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         card_content.pack_start(play_button, False, False, 10)
