@@ -60,7 +60,8 @@ class MainApp(Gtk.Window):
 
     def _on_keypress(self, widget, event):
         if event.keyval == Gdk.KEY_space:
-            self._player_widget.toogle_play()
+            if self.get_active_pane() == "player":
+                self._player_widget.toogle_play()
         if event.keyval == Gdk.KEY_F11:
             self.toggle_fullscreen()
 

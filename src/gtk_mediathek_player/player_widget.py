@@ -45,7 +45,14 @@ class PlayerWidget(Gtk.Overlay):
 
         if self._duration is not None:
 
-            self._slider.set_value(self._videoarea.get_position())
+            position = self._videoarea.get_position()
+
+            self._slider.set_value(position)
+
+            position_string = tools.seconds_to_timestring(int(position))
+            duration_string = tools.seconds_to_timestring(int(self._duration))
+
+            self._duration_text.set_markup(f"{position_string}/{duration_string}")
 
         self._is_update = False
 
@@ -83,15 +90,7 @@ class PlayerWidget(Gtk.Overlay):
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self._controls = Gtk.Revealer()
 
-        # bbox.pack_start(self._play_button,
-        #               expand=False,
-        #               fill=False,
-        #               padding=0)
-
-        # bbox.pack_start(self._stop_button,
-        #               expand=False,
-        #               fill=False,
-        #               padding=0)
+        self._duration_text = Gtk.Label("--/--")
 
         bbox.pack_start(self._play_pause_button,
                         expand=False,
@@ -103,10 +102,17 @@ class PlayerWidget(Gtk.Overlay):
                        fill=False,
                        padding=0)
 
+        box.pack_end(self._duration_text,
+                     expand=False,
+                     fill=False,
+                     padding=0)
+
         box.pack_end(self._slider,
                      expand=True,
                      fill=True,
                      padding=0)
+
+        box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(.0,.0,.0,.8))
 
         self._controls.add(box)
 
@@ -115,10 +121,9 @@ class PlayerWidget(Gtk.Overlay):
         self._controls.set_reveal_child(True)
 
         style_context = self._controls.get_style_context()
-        style_context.add_class(Gtk.STYLE_CLASS_TITLEBAR)
+        style_context.add_class(Gtk.STYLE_CLASS_OSD)
 
-        #self._play_button.connect("clicked", self.play)
-        #self._stop_button.connect("clicked", self.pause)
+
 
         self._play_pause_button.connect("clicked", self.toogle_play)
 
@@ -133,14 +138,18 @@ class PlayerWidget(Gtk.Overlay):
 
     def stop(self, _=None):
         state = self.get_state()
+        self._videoarea.stop()
         if state == Gst.State.PLAYING or state == Gst.State.PAUSED:
             new_icon = tools.get_icon("media-playback-start")
             self._play_pause_button.props.image = new_icon
-            self._videoarea.stop()
             self._duration = None
 
     def toogle_play(self, _=None):
         state = self.get_state()
+
+        if state == Gst.State.NULL:
+            # do nothing
+            return
 
         if state == Gst.State.PLAYING:
             self.pause()
