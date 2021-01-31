@@ -2,7 +2,7 @@ from . import mediathek_request as mr
 from . import tools
 from . import search_widget
 from . import player_widget
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 import gi
 
 gi.require_version("Gtk", "3.0")
@@ -48,6 +48,8 @@ class MainApp(Gtk.Window):
 
         self.set_active_pane("search")
 
+        self.connect("key-press-event", self._on_keypress)
+
         GLib.timeout_add_seconds(1, self.update)
 
     def on_mouse_move(self, _, __):
@@ -55,6 +57,12 @@ class MainApp(Gtk.Window):
         self._seconds_after_mouse_move = 0
         if self._fullscreen:
             self._revealer.set_reveal_child(True)
+
+    def _on_keypress(self, widget, event):
+        if event.keyval == Gdk.KEY_space:
+            self._player_widget.toogle_play()
+        if event.keyval == Gdk.KEY_F11:
+            self.toggle_fullscreen()
 
     def update(self):
         if self._seconds_after_mouse_move > 1:

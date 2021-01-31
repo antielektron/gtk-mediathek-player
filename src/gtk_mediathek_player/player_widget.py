@@ -1,6 +1,6 @@
 from . import tools
 from . import gst_widget
-from gi.repository import Gtk, GLib, Gst
+from gi.repository import Gtk, GLib, Gst, Gdk
 import gi
 
 gi.require_version("Gtk", "3.0")
@@ -51,7 +51,7 @@ class PlayerWidget(Gtk.Overlay):
 
         if self._seconds_after_mouse_move > 3:
             self._controls.set_reveal_child(False)
-        
+
         self._seconds_after_mouse_move += 1
 
         return True
@@ -72,24 +72,31 @@ class PlayerWidget(Gtk.Overlay):
         self._slider.props.draw_value = False
 
         self._play_button = tools.new_button_with_icon('media-playback-start')
-        
 
         self._stop_button = tools.new_button_with_icon('media-playback-stop')
+
+        self._play_pause_button = tools.new_button_with_icon(
+            'media-playback-pause')
 
         bbox = Gtk.ButtonBox(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_layout(Gtk.ButtonBoxStyle.EXPAND)
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self._controls = Gtk.Revealer()
 
-        bbox.pack_start(self._play_button,
-                       expand=False,
-                       fill=False,
-                       padding=0)
+        # bbox.pack_start(self._play_button,
+        #               expand=False,
+        #               fill=False,
+        #               padding=0)
 
-        bbox.pack_start(self._stop_button,
-                       expand=False,
-                       fill=False,
-                       padding=0)
+        # bbox.pack_start(self._stop_button,
+        #               expand=False,
+        #               fill=False,
+        #               padding=0)
+
+        bbox.pack_start(self._play_pause_button,
+                        expand=False,
+                        fill=False,
+                        padding=0)
 
         box.pack_start(bbox,
                        expand=False,
@@ -101,9 +108,7 @@ class PlayerWidget(Gtk.Overlay):
                      fill=True,
                      padding=0)
 
-        
         self._controls.add(box)
-
 
         self._controls.set_valign(Gtk.Align.END)
         self._controls.set_transition_type(Gtk.RevealerTransitionType.SLIDE_UP)
@@ -112,29 +117,46 @@ class PlayerWidget(Gtk.Overlay):
         style_context = self._controls.get_style_context()
         style_context.add_class(Gtk.STYLE_CLASS_TITLEBAR)
 
-        self._play_button.connect("clicked", self.play)
-        self._stop_button.connect("clicked", self.pause)
+        #self._play_button.connect("clicked", self.play)
+        #self._stop_button.connect("clicked", self.pause)
+
+        self._play_pause_button.connect("clicked", self.toogle_play)
 
     def play_from_uri(self, uri: str):
         self._videoarea.load_from_uri(uri)
 
     def play(self, _=None):
         if self.get_state() != Gst.State.PLAYING:
+            new_icon = tools.get_icon("media-playback-pause")
+            self._play_pause_button.props.image = new_icon
             self._videoarea.play()
 
     def stop(self, _=None):
         state = self.get_state()
         if state == Gst.State.PLAYING or state == Gst.State.PAUSED:
+            new_icon = tools.get_icon("media-playback-start")
+            self._play_pause_button.props.image = new_icon
             self._videoarea.stop()
             self._duration = None
 
+    def toogle_play(self, _=None):
+        state = self.get_state()
+
+        if state == Gst.State.PLAYING:
+            self.pause()
+
+        elif state == Gst.State.PAUSED:
+            self.play()
+
     def pause(self, _=None):
         if self.get_state() == Gst.State.PLAYING:
+            new_icon = tools.get_icon("media-playback-start")
+            self._play_pause_button.props.image = new_icon
             self._videoarea.pause()
 
     def get_state(self):
         return self._videoarea.get_state()
-    
+
     def show_controls(self):
         self._controls.set_reveal_child(True)
         self._seconds_after_mouse_move = 0
