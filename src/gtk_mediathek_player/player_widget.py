@@ -52,7 +52,8 @@ class PlayerWidget(Gtk.Overlay):
             position_string = tools.seconds_to_timestring(int(position))
             duration_string = tools.seconds_to_timestring(int(self._duration))
 
-            self._duration_text.set_markup(f"{position_string}/{duration_string}")
+            self._duration_text.set_markup(
+                f"{position_string}/{duration_string}")
 
         self._is_update = False
 
@@ -115,7 +116,8 @@ class PlayerWidget(Gtk.Overlay):
         # TODO: replace this deprecated (honestly, i find it disturbing that there is no container or css template)
         # already there to do this, such that you are forced to create a custom css
         # snippet and override the default gtk scheme)
-        box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(.0,.0,.0,.8))
+        box.override_background_color(
+            Gtk.StateType.NORMAL, Gdk.RGBA(.0, .0, .0, .8))
 
         self._controls.add(box)
 
@@ -125,8 +127,6 @@ class PlayerWidget(Gtk.Overlay):
 
         style_context = self._controls.get_style_context()
         style_context.add_class(Gtk.STYLE_CLASS_OSD)
-
-
 
         self._play_pause_button.connect("clicked", self.toogle_play)
 
@@ -168,13 +168,13 @@ class PlayerWidget(Gtk.Overlay):
 
     def get_state(self):
         return self._videoarea.get_state()
-    
+
     def is_playing(self) -> bool:
         return self.get_state() == Gst.State.PLAYING
-    
+
     def is_stopped(self) -> bool:
         return self.get_state() == Gst.State.NULL
-    
+
     def is_paused(self) -> bool:
         return self.get_state() == Gst.State.PAUSED
 

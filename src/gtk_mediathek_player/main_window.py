@@ -7,10 +7,13 @@ import gi
 
 gi.require_version("Gtk", "3.0")
 
+WINDOW_TITLE = "Gtk Mediathek Player"
 
 class MainApp(Gtk.Window):
     def __init__(self):
-        Gtk.Window.__init__(self, title="Gtk Mediathek Player")
+        Gtk.Window.__init__(self, title=WINDOW_TITLE)
+
+        self._current_mediathek_item = None
 
         self.set_default_icon_name("gtkmediathekplayer")
 
@@ -36,9 +39,12 @@ class MainApp(Gtk.Window):
         self._main_container.add(self._main_stack)
 
         self._headerbar = self._create_headerbar(True)
+
+        # TODO: standardize widget creation methods
+        self._fullscreen_bar = self._create_headerbar(False)
+        self._fullscreen_bar.set_title(WINDOW_TITLE)
         self._create_fullscreen_bar()
 
-        # self._main_container.add_overlay(self._create_fullscreen_bar())
         self._main_container.add_overlay(self._revealer)
         self.add(self._main_container)
 
@@ -126,7 +132,7 @@ class MainApp(Gtk.Window):
 
     def _create_fullscreen_bar(self):
         self._revealer = Gtk.Revealer()
-        self._revealer.add(self._create_headerbar(False))
+        self._revealer.add(self._fullscreen_bar)
         self._revealer.set_valign(Gtk.Align.START)
         self._revealer.set_vexpand(False)
         self._revealer.set_transition_type(
@@ -150,17 +156,35 @@ class MainApp(Gtk.Window):
         self._main_stack.set_visible_child_name(name)
         if name != "player":
             self._player_widget.pause()
+            self.set_title(WINDOW_TITLE)
+            self._fullscreen_bar.set_title(WINDOW_TITLE)
         else:
             if active_pane != "player":
                 if self._player_widget.is_paused():
                     self._player_widget.play()
+                
+                if self._current_mediathek_item is not None:
+                    title = self._current_mediathek_item.get_title()
+                    if title is not None:
+                        self.set_title(title)
 
     def get_active_pane(self):
         return self._main_stack.get_visible_child_name()
 
-    def start_player(self, uri: str):
+    def start_player(self,
+                     uri: str,
+                     mediathek_item:mr.MediathekViewWebAnswer = None):
         if self.get_active_pane() != "player":
             self.set_active_pane("player")
+        
+        self._current_mediathek_item = mediathek_item
+
+        if mediathek_item is not None:
+            title = mediathek_item.get_title()
+            if title is not None:
+                self.set_title(title)
+                self._fullscreen_bar.set_title(title)
+                #self._headerbar.set_title(title)
 
         self._player_widget.stop()
         self._player_widget.play_from_uri(uri)
