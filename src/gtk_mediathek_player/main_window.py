@@ -75,17 +75,33 @@ class MainApp(Gtk.Window):
         return True
 
     def on_search(self, _=None):
-        if self.get_active_pane() == "player":
-            self._player_widget.pause()
         self.set_active_pane("search")
 
-    def _create_context_switch(self):
+    def on_player(self, _=None):
+        self.set_active_pane("player")
 
-        self._search_radio = tools.new_button_with_icon("edit-find")
+    def _create_context_switch(self, container):
 
-        self._search_radio.connect("clicked", self.on_search)
+        bbox = Gtk.ButtonBox(orientation=Gtk.Orientation.HORIZONTAL)
+        bbox.set_layout(Gtk.ButtonBoxStyle.EXPAND)
 
-        # more to come...
+        search_radio = tools.new_button_with_icon("edit-find")
+        search_radio.connect("clicked", self.on_search)
+
+        player_radio = tools.new_button_with_icon("tv-symbolic")
+        player_radio.connect("clicked", self.on_player)
+
+        bbox.pack_start(player_radio,
+                        expand=False,
+                        fill=False,
+                        padding=0)
+
+        bbox.pack_start(search_radio,
+                        expand=False,
+                        fill=False,
+                        padding=0)
+
+        container.pack_start(bbox)
 
     def _create_headerbar(self, main_bar=True):
         headerbar = Gtk.HeaderBar()
@@ -96,13 +112,11 @@ class MainApp(Gtk.Window):
 
         headerbar.pack_end(fullscreen)
 
+        self._create_context_switch(headerbar)
+
         if main_bar:
 
-            self._create_context_switch()
-
             self._fullscreen_button = fullscreen
-
-            headerbar.pack_start(self._search_radio)
 
             headerbar.set_show_close_button(True)
             headerbar.props.title = "Gtk Mediathek Player"
@@ -131,11 +145,15 @@ class MainApp(Gtk.Window):
         Gtk.main()
 
     def set_active_pane(self, name: str):
+        active_pane = self.get_active_pane()
+
         self._main_stack.set_visible_child_name(name)
         if name != "player":
-            self._fullscreen_button.set_sensitive(False)
+            self._player_widget.pause()
         else:
-            self._fullscreen_button.set_sensitive(True)
+            if active_pane != "player":
+                if self._player_widget.is_paused():
+                    self._player_widget.play()
 
     def get_active_pane(self):
         return self._main_stack.get_visible_child_name()

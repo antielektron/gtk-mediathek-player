@@ -112,6 +112,9 @@ class PlayerWidget(Gtk.Overlay):
                      fill=True,
                      padding=0)
 
+        # TODO: replace this deprecated (honestly, i find it disturbing that there is no container or css template)
+        # already there to do this, such that you are forced to create a custom css
+        # snippet and override the default gtk scheme)
         box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(.0,.0,.0,.8))
 
         self._controls.add(box)
@@ -165,6 +168,15 @@ class PlayerWidget(Gtk.Overlay):
 
     def get_state(self):
         return self._videoarea.get_state()
+    
+    def is_playing(self) -> bool:
+        return self.get_state() == Gst.State.PLAYING
+    
+    def is_stopped(self) -> bool:
+        return self.get_state() == Gst.State.NULL
+    
+    def is_paused(self) -> bool:
+        return self.get_state() == Gst.State.PAUSED
 
     def show_controls(self):
         self._controls.set_reveal_child(True)
