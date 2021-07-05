@@ -1,6 +1,6 @@
 # gtk-mediathek-player
 
-very simple python mediathek viewer for GNOME (using https://mediathekviewweb.de/'s API for search requests).
+very simple python mediathek viewer for GNOME (using https://mediathekviewweb.de/ 's API for search requests).
 
 ![player widget](readme_images/player.jpeg)
 
@@ -16,8 +16,10 @@ tested on ubuntu 21.04
 
 **dependencies**
 
+make sure pip and additional video codecs are installed
+
 ```bash
-sudo apt install python3-pip gstreamer1.0-plugins-bad
+sudo apt install python3-pip gstreamer1.0-plugins-bad ubuntu-restricted-extras
 ```
 
 **install directly from the git repository**
